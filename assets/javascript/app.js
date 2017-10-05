@@ -9,44 +9,46 @@ var triviaTime = 15;
   var breakTime=5;
   var breakRunning=false;
   var userAnswer;
-  var clickAnswer=false;
-
+  //var clickAnswer=false;
+  var bool_numCorrect=false;
+  var bool_numInCorrect=false;
+  var bool_numNoAnswer=false;
   //global object for trivia questions
 var triviaQ = [
 
                 {
-                                question: "What is the national language of India?",
-                                answers: ["English","Hindi","Tulu","Nepali"],
-                                correctAnswer: 1
+                               question: "What animal is on House Baratheon's sigil?",
+                                answers: ["Boar","Bear","Stag","Lion"],
+                                correctAnswer: 2
 
                 },
 
                 {
-                                question: "The oldest parliament in the world belongs to what country?",
-                                answers: ["Iceland","Netherlands","Scotland","Ireland"],
+                                question: "What are House Lannister's words?",
+                                answers: ["Hear Me Roar!","A Lannister Always Pays His Debts","Ours Be the Glory","Righteous In Wrath"],
                                 correctAnswer: 0
 
                 },
 
                 {
-                                question: "In what year did Fidel Castro die?",
-                                answers: ["2015","2014","2016","2017"],
+                                question: "Who says, 'When you play the game of thrones, you win or you die'?",
+                                answers: ["Varys","Cersei Lannister","Tyrion Lannister","Petyr Baelish"],
+                                correctAnswer: 1
+
+                },
+
+                {
+                                question: "Who has Petyr Baelish loved since he was a child?",
+                                answers: ["Sansa Stark","Lysa Arryn","Catelyn Stark","Cersei Lanister"],
                                 correctAnswer: 2
 
                 },
 
                 {
-                                question: "HTML and CSS are computer languages used to create what?",
-                                answers: ["Bugs","Games","Toys","WebSites"],
+                                question: "Who is Joffrey Baratheon's father?",
+                                answers: ["Tyrion Lannister","Stannis Baratheon","Robert Baratheon","Jaime Lannister"],
+
                                 correctAnswer: 3
-
-                },
-
-                {
-                                question: "In our solar system which two planets rotate clockwise?",
-                                answers: ["Mars and Saturn","Neptune and pluto","Venus & Uranus","None of the above"],
-
-                                correctAnswer: 2
 
                 }
 
@@ -129,11 +131,12 @@ function checkAnswer(){
 var correctAnswer=triviaQ[currentQuestion].answers[triviaQ[currentQuestion].correctAnswer]
 console.log("checkAnswer"+userAnswer)
 console.log("correctAnswer" +correctAnswer)
-console.log("clickAnswer"+clickAnswer)
- if (userAnswer===correctAnswer && (clickAnswer=true)){
+//console.log("clickAnswer"+clickAnswer)
+ if (userAnswer===correctAnswer){
   console.log("you got it right")
   var decision=$('<h2>You Got it Right!!</h2>').appendTo('#quizSection')
   numCorrect++;
+  bool_numCorrect=true;
   }  
   // else if(!userAnswer && triviaTime===0 && clickAnswer===false ){
   // console.log("you didnt answer")
@@ -144,26 +147,64 @@ console.log("clickAnswer"+clickAnswer)
   console.log("you got it wrong")
   var decision=$('<h2>You Got it Wrong :( :(</h2>').appendTo('#quizSection')
   numIncorrect++;
+  var bool_numInCorrect=true;
   }
 
   
 
 }
 
+
+function displayResults(){
+  stopTimer();
+  breakTimer();
+  $("#quizSection").empty();
+  //if(numCorrect)
+
+}
+
+
+
+function displayResult(){
+                $(".game").remove();
+                $("#Submit").remove();
+                triviaTime = 0;
+                //stopTimer();
+                $("#triviaTime").hide();
+                
+              $( "#results").append(
+            "<div><h2>All Done!!!</h2></div>",
+            "<div><h2>Correct Answers: " + numCorrect + "</h2></div>",
+            "<div><h2>Incorrect Answers: " + numIncorrect + "</h2></div>",
+            "<div><h2>Unanswered: " + noAnswer + "</h2></div>"
+          );
+              var btn=$('<button>',{
+                    id:'Reset',
+                    class:'btn btn-primary btn-lg col-md-offset-5',
+                    text:'Reset'}
+                    );
+                    
+                    $('body').append(btn);
+        
+ 
+}
+
+
+
 function captureAnswer(){
   $("body").on("click",".answers",function(){
                         stopTimer();
                         $("#triviaTime").hide();
-
+                          console.log("line 198 "+totalQuestions)
                       if(totalQuestions>0){
                                   userAnswer=$(this).text();
                                   console.log(userAnswer)
                                
                                   checkAnswer();
-                                  currentQuestion++;
-                                   totalQuestions--;
                                   
-                                   console.log(totalQuestions);
+                                   
+                                  
+                                   console.log("line 208 "+totalQuestions);
                                    var result =$('<div>The Answer is' +triviaQ[currentQuestion].answers[j] +'</div>').appendTo('#quizSection');
                                    breakTimer();
                                    $("#quizSection").empty();
@@ -171,12 +212,16 @@ function captureAnswer(){
                                    console.log(breakTime);
                                    triviaTime=15;
                                    $("#triviaTime").show();
-                                   startTimer();
 
+                                   startTimer();
                                    createQuiz();
+                                  totalQuestions--;
+                                  currentQuestion++;
                                 //}
 }
- if(totalQuestions===0){
+ else{
+  console.log("total questions is zero")
+  displayResult();
   
  }
 
